@@ -34,7 +34,7 @@ const key = `{
 }`
 
 //upload file
-func Upload(filename string) (response string, statusCode int, err error) {
+func Upload(filename string, data []byte) (response string, statusCode int, err error) {
 	buf := &bytes.Buffer{}
 	w := multipart.NewWriter(buf)
 
@@ -43,17 +43,21 @@ func Upload(filename string) (response string, statusCode int, err error) {
 		panic(err)
 	}
 
-	fh, err := os.Open(filename)
-	if err != nil {
-		panic(err)
-	}
-	defer fh.Close()
+	if data == nil {
+		fh, err := os.Open(filename)
+		if err != nil {
+			panic(err)
+		}
+		defer fh.Close()
 
-	_, err = io.Copy(fileWriter, fh)
-	if err != nil {
-		panic(err)
+		_, err = io.Copy(fileWriter, fh)
+		if err != nil {
+			panic(err)
+		}
+		w.Close()
+	} else {
+		fileWriter.Write(data)
 	}
-	w.Close()
 
 	request, err := http.NewRequest(common.HttpPost, common.ApiIPFSAdd, buf)
 	if err != nil {

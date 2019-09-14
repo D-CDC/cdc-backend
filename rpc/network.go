@@ -12,14 +12,33 @@ import (
 
 func StartRpcServer(method string, params string) {
 	if strings.Contains(method, common.CmdIPFSAdd) {
-		car.CreateUserInfo(params)
-		response, statusCode, _ := logic.Upload(params)
-		result := parse.ParseResponse(response, statusCode)
-		contract.SendTransaction(method, result)
+		switch params {
+		case common.ADDCar:
+			car.CreateUserInfo(params)
+			response, statusCode, _ := logic.Upload(params, nil)
+			result := parse.ParseResponse(response, statusCode)
+			contract.SendTransaction(method, result)
+			break
+		case common.ADDDrive:
+			data := car.CreateUserDrive(params + common.SuffixJpg)
+			response, statusCode, _ := logic.Upload(params, data)
+			result := parse.ParseResponse(response, statusCode)
+			contract.SendTransaction(method, result)
+			break
+		}
 	} else if strings.Contains(method, common.CmdIPFSDownload) {
-		result := contract.SendTransaction(method, params)
-		data, _ := logic.Download(result, common.IPFSFileName)
-		dataOrigin := crypto.AESCbCDecrypt(data, []byte(common.CipherKey))
-		car.ConvertToFile(dataOrigin, "name")
+		switch params {
+		case common.ADDCar:
+			result := contract.SendTransaction(method, params)
+			data, _ := logic.Download(result, common.IPFSFileName)
+			dataOrigin := crypto.AESCbCDecrypt(data, []byte(common.CipherKey))
+			car.ConvertToFile(dataOrigin, params+common.SuffixTxt)
+			break
+		case common.ADDDrive:
+			result := contract.SendTransaction(method, params)
+			data, _ := logic.Download(result, common.IPFSFileName)
+			dataOrigin := crypto.AESCbCDecrypt(data, []byte(common.CipherKey))
+			car.ConvertToFile(dataOrigin, params+common.SuffixJpg)
+		}
 	}
 }

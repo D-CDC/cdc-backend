@@ -17,4 +17,5 @@ const (
 	GasValue                   = "0x3B9ACA00"
 	GasLimit                   = "0x4C4B40"
 	DownLoadValue              = "QmcX5tTqR7EqdaPjMUVD9x74ieCLj8nYEgPmzu7Urt2QXb"
+	DownLoadJpgValue           = "Qmdn98mNs8yXK7nnBi8HgcM9mEM3jh5ZNHXfPcZUVUhiH3"
 )

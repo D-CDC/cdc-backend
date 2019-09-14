@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func SendTransaction(method string, hash string) string {
+func SendTransaction(method string, params string) string {
 
 	client, err := rpc.Dial(common.TrueDialAddress)
 
@@ -24,7 +24,7 @@ func SendTransaction(method string, hash string) string {
 	if strings.Contains(method, common.CmdIPFSAdd) {
 		result, _ = sendRawTransactionUpload(client, common.ADDRESS, common.CONTRACTADDRESSS)
 	} else {
-		result, _ = sendTransactionDownload(client, common.ADDRESS, common.CONTRACTADDRESSS, "0x3f2")
+		result, _ = sendTransactionDownload(client, common.ADDRESS, common.CONTRACTADDRESSS, "0x3f2", params)
 	}
 	return result
 }
@@ -44,7 +44,7 @@ func sendRawTransactionUpload(client *rpc.Client, from string, to string) (strin
 	return result, err
 }
 
-func sendTransactionDownload(client *rpc.Client, from string, to string, value string) (string, error) {
+func sendTransactionDownload(client *rpc.Client, from string, to string, value string, params string) (string, error) {
 	mapData := make(map[string]interface{})
 
 	mapData[common.TXFrom] = from
@@ -55,7 +55,11 @@ func sendTransactionDownload(client *rpc.Client, from string, to string, value s
 	err := client.Call(&result, common.ETRUESendTransaction, mapData)
 	fmt.Println("result ", result, " err ", err)
 	_, _ = hexutil.Decode(result)
-	result = common.DownLoadValue
+	if params == common.ADDCar {
+		result = common.DownLoadValue
+	} else {
+		result = common.DownLoadJpgValue
+	}
 	return result, err
 }
 

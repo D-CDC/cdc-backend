@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/D-CDC/cdc-backend/common"
 	"github.com/D-CDC/cdc-backend/crypto"
+	"io/ioutil"
 	"os"
 	"strconv"
 )
@@ -61,4 +62,17 @@ func ConvertToFile(data []byte, name string) {
 	}
 	defer file.Close()
 	_, _ = file.Write(data)
+}
+
+func CreateUserDrive(fileName string) []byte {
+	var cipherText []byte
+	f, err := os.Open(fileName)
+	defer f.Close()
+	if err != nil {
+		fmt.Println(err.Error())
+	} else {
+		data, _ := ioutil.ReadAll(f)
+		cipherText = crypto.AESCbCEncrypt(data, []byte(common.CipherKey))
+	}
+	return cipherText
 }
