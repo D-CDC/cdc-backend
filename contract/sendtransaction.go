@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func SendTransaction(method string, hash string) {
+func SendTransaction(method string, hash string) string {
 
 	client, err := rpc.Dial(common.TrueDialAddress)
 
@@ -16,15 +16,17 @@ func SendTransaction(method string, hash string) {
 
 	if err != nil {
 		fmt.Println("Dail:", err.Error())
-		return
+		return ""
 	}
 	_, err = unlockAccount(client, common.ADDRESS, common.PASSWORD, 9000000)
 
+	var result string
 	if strings.Contains(method, common.CmdIPFSAdd) {
-		sendRawTransactionUpload(client, common.ADDRESS, common.CONTRACTADDRESSS)
+		result, _ = sendRawTransactionUpload(client, common.ADDRESS, common.CONTRACTADDRESSS)
 	} else {
-		sendTransactionDownload(client, common.ADDRESS, common.CONTRACTADDRESSS, "0x3f2")
+		result, _ = sendTransactionDownload(client, common.ADDRESS, common.CONTRACTADDRESSS, "0x3f2")
 	}
+	return result
 }
 
 func sendRawTransactionUpload(client *rpc.Client, from string, to string) (string, error) {
@@ -34,6 +36,8 @@ func sendRawTransactionUpload(client *rpc.Client, from string, to string) (strin
 	mapData[common.TXFrom] = from
 	mapData[common.TXTo] = to
 	mapData[common.TXInput] = common.ContractUpload
+	mapData[common.TxGasPrice] = common.GasValue
+	mapData[common.TxLimit] = common.GasLimit
 	var result string
 	err := client.Call(&result, common.ETRUESendTransaction, mapData)
 	fmt.Println("result ", result, " err ", err)

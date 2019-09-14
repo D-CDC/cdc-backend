@@ -7,10 +7,6 @@ import (
 	"os"
 )
 
-//Count send complete
-var Count int64
-
-// get par
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Printf("invalid args : %s [method] [file/hash] [\"port\"]\n", os.Args[0])
