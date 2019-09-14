@@ -2,6 +2,8 @@ package car
 
 import (
 	"fmt"
+	"github.com/D-CDC/cdc-backend/common"
+	"github.com/D-CDC/cdc-backend/crypto"
 	"os"
 	"strconv"
 )
@@ -14,16 +16,17 @@ type InfoCar struct {
 }
 
 func CreateUserInfo(fileName string) {
-	createFileAndWrite(fileName, readUserInfo().toString())
+	cipherText := crypto.AESCbCEncrypt([]byte(readUserInfo().toString()), []byte(common.CipherKey))
+	createFileAndWrite(fileName, cipherText)
 }
 
-func createFileAndWrite(fileName string, info string) {
+func createFileAndWrite(fileName string, cipher []byte) {
 	f, err := os.Create(fileName)
 	defer f.Close()
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
-		_, err = f.Write([]byte(info))
+		_, err = f.Write(cipher)
 		if err != nil {
 			fmt.Println(err.Error())
 		}

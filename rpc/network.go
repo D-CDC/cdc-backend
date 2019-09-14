@@ -15,8 +15,7 @@ func StartRpcServer(method string, hash string) {
 		car.CreateUserInfo(hash)
 		response, statusCode, _ := logic.Upload(hash)
 		result := parse.ParseResponse(response, statusCode)
-		cipherText := crypto.AESCbCEncrypt([]byte(result), []byte(common.CipherKey))
-		contract.SendTransaction(cipherText)
+		contract.SendTransaction(method, result)
 
 	} else if strings.Contains(method, common.CmdIPFSDownload) {
 		//contract.SendTransaction(cipherText)
