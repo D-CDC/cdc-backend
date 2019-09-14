@@ -7,3 +7,5 @@
 # interact with blockchain
 * upload hash to blockchain use smartcontract
 * get user info from blockchain use smartcontract
+# crypto user info
+* use aes to crypto user info
