@@ -3,12 +3,11 @@ package logic
 import (
 	"bytes"
 	"fmt"
-	"github.com/D-CDC/cdc-backend/contract"
+	"github.com/D-CDC/cdc-backend/common"
 	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
-	//"strconv"
 )
 
 const key = `{
@@ -34,11 +33,11 @@ const key = `{
 }`
 
 //upload file
-func Upload(filename string) (response string, stat_code int, err error) {
+func Upload(filename string) (response string, statusCode int, err error) {
 	buf := &bytes.Buffer{}
 	w := multipart.NewWriter(buf)
 
-	fileWriter, err := w.CreateFormFile("uploadfile", filename)
+	fileWriter, err := w.CreateFormFile(common.FormFile, filename)
 	if err != nil {
 		panic(err)
 	}
@@ -49,19 +48,18 @@ func Upload(filename string) (response string, stat_code int, err error) {
 	}
 	defer fh.Close()
 
-	//iocopy
 	_, err = io.Copy(fileWriter, fh)
 	if err != nil {
 		panic(err)
 	}
 	w.Close()
 
-	request, err := http.NewRequest("POST", "http://localhost:5001/api/v0/add", buf)
+	request, err := http.NewRequest(common.HttpPost, common.IpiIPFSAdd, buf)
 	if err != nil {
 		panic(err)
 	}
 
-	request.Header.Set("Content-Type", w.FormDataContentType())
+	request.Header.Set(common.HttpHeadType, w.FormDataContentType())
 	var client http.Client
 	res, err := client.Do(request)
 	if err != nil {
@@ -71,7 +69,6 @@ func Upload(filename string) (response string, stat_code int, err error) {
 	resbuf := new(bytes.Buffer)
 	resbuf.ReadFrom(res.Body)
 	response = resbuf.String()
-	contract.SendTransaction(response, res.StatusCode)
 	return
 }
 
@@ -121,7 +118,7 @@ func Download(hash string, filepath string) (err error) {
 	}
 	defer file.Close()
 	io.Copy(file, res.Body) // Replace this with Status.Code check
-	fmt.Println("response ", " stat_code ", res.Status)
+	fmt.Println("response ", " statusCode ", res.Status)
 	return err
 }
 

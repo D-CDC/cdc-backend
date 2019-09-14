@@ -10,12 +10,6 @@ import (
 //Count send complete
 var Count int64
 
-//get all account
-var account []string
-
-// The message state
-var msg = make(chan bool)
-
 // get par
 func main() {
 	if len(os.Args) < 3 {
