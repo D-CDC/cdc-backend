@@ -54,7 +54,7 @@ func Upload(filename string) (response string, statusCode int, err error) {
 	}
 	w.Close()
 
-	request, err := http.NewRequest(common.HttpPost, common.IpiIPFSAdd, buf)
+	request, err := http.NewRequest(common.HttpPost, common.ApiIPFSAdd, buf)
 	if err != nil {
 		panic(err)
 	}
@@ -72,27 +72,6 @@ func Upload(filename string) (response string, statusCode int, err error) {
 	return
 }
 
-//pin file
-func PinAdd(hash string) (response string, err error) {
-	buf := new(bytes.Buffer)
-	r := multipart.NewWriter(buf)
-	defer r.Close()
-
-	request, err := http.NewRequest("POST", "http://localhost:5001/api/v0/pin/add?arg="+hash, buf)
-	if err != nil {
-		panic(err)
-	}
-	var client http.Client
-	res, err := client.Do(request)
-	if err != nil {
-		panic(err)
-	}
-	resbuf := new(bytes.Buffer)
-	resbuf.ReadFrom(res.Body)
-	response = resbuf.String()
-	return
-}
-
 //download file
 func Download(hash string, filepath string) (err error) {
 	// Create buffer
@@ -101,7 +80,7 @@ func Download(hash string, filepath string) (err error) {
 	r := multipart.NewWriter(buf)
 
 	defer r.Close()
-	req, err := http.NewRequest("POST", "http://localhost:5001/api/v0/cat?arg="+hash, buf)
+	req, err := http.NewRequest(common.HttpPost, common.ApiIPFSCAT+hash, buf)
 	if err != nil {
 		panic(err)
 	}

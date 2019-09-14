@@ -1,25 +1,12 @@
 package contract
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"github.com/D-CDC/cdc-backend/common"
 	"github.com/truechain/truechain-engineering-code/rpc"
 )
 
-type IPFSResult struct {
-	Name string `json:"name"      gencodec:"required"`
-	Hash string `json:"hash" 	  gencodec:"required"`
-	Size string `json:"size"      gencodec:"required"`
-}
-
-func SendTransaction(response string, statusCode int) {
-
-	var result = IPFSResult{}
-	json.Unmarshal(bytes.NewBufferString(response).Bytes(), &result)
-
-	fmt.Println("response ", response, " status_code ", statusCode, "result ", result.Hash)
+func SendTransaction(cipherText []byte) {
 
 	client, err := rpc.Dial(common.TrueDialAddress)
 
