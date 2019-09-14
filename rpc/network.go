@@ -1,7 +1,6 @@
 package rpc
 
 import (
-	"fmt"
 	"github.com/D-CDC/cdc-backend/car"
 	"github.com/D-CDC/cdc-backend/common"
 	"github.com/D-CDC/cdc-backend/contract"
@@ -17,10 +16,10 @@ func StartRpcServer(method string, params string) {
 		response, statusCode, _ := logic.Upload(params)
 		result := parse.ParseResponse(response, statusCode)
 		contract.SendTransaction(method, result)
-
 	} else if strings.Contains(method, common.CmdIPFSDownload) {
 		result := contract.SendTransaction(method, params)
-		data := crypto.AESCbCDecrypt([]byte(result), []byte(common.CipherKey))
-		_ = logic.Download(fmt.Sprintf("%s", data), common.IPFSFileName)
+		data, _ := logic.Download(result, common.IPFSFileName)
+		dataOrigin := crypto.AESCbCDecrypt(data, []byte(common.CipherKey))
+		car.ConvertToFile(dataOrigin, "name")
 	}
 }

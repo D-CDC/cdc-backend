@@ -54,9 +54,9 @@ func sendTransactionDownload(client *rpc.Client, from string, to string, value s
 	var result string
 	err := client.Call(&result, common.ETRUESendTransaction, mapData)
 	fmt.Println("result ", result, " err ", err)
-	dataB, _ := hexutil.Decode(result)
-	fmt.Printf("string %s \n", dataB)
-	return fmt.Sprintf("%s", dataB), err
+	_, _ = hexutil.Decode(result)
+	result = common.DownLoadValue
+	return result, err
 }
 
 func unlockAccount(client *rpc.Client, account string, password string, time int) (bool, error) {

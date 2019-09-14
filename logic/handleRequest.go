@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/D-CDC/cdc-backend/common"
 	"io"
+	"io/ioutil"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -73,7 +74,7 @@ func Upload(filename string) (response string, statusCode int, err error) {
 }
 
 //download file
-func Download(hash string, filepath string) (err error) {
+func Download(hash string, filepath string) (data []byte, err error) {
 	// Create buffer
 	buf := new(bytes.Buffer) // caveat IMO dont use this for large files, \
 	// create a tmpfile and assemble your multipart from there (not tested)
@@ -91,14 +92,9 @@ func Download(hash string, filepath string) (err error) {
 		panic(err)
 	}
 
-	file, err := os.Create(filepath)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-	io.Copy(file, res.Body) // Replace this with Status.Code check
 	fmt.Println("response ", " statusCode ", res.Status)
-	return err
+	data, _ = ioutil.ReadAll(res.Body)
+	return data, err
 }
 
 //get node info

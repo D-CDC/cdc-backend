@@ -16,7 +16,9 @@ type InfoCar struct {
 }
 
 func CreateUserInfo(fileName string) {
-	cipherText := crypto.AESCbCEncrypt([]byte(readUserInfo().toString()), []byte(common.CipherKey))
+	data := readUserInfo().toString()
+	fmt.Println(" data ", data)
+	cipherText := crypto.AESCbCEncrypt([]byte(data), []byte(common.CipherKey))
 	createFileAndWrite(fileName, cipherText)
 }
 
@@ -26,6 +28,7 @@ func createFileAndWrite(fileName string, cipher []byte) {
 	if err != nil {
 		fmt.Println(err.Error())
 	} else {
+		fmt.Println("cipher len", len(cipher))
 		_, err = f.Write(cipher)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -49,4 +52,13 @@ func readUserInfo() *InfoCar {
 
 func (f InfoCar) toString() string {
 	return f.model + strconv.FormatInt(f.age, 10) + f.position + strconv.FormatInt(f.speed, 10)
+}
+
+func ConvertToFile(data []byte, name string) {
+	file, err := os.Create(name)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	_, _ = file.Write(data)
 }
