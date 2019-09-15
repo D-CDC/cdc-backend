@@ -5,4 +5,6 @@ const (
 	FormFile        = "uploadfile"
 	HttpPost        = "POST"
 	HttpHeadType    = "Content-Type"
+	IPFSDialAddress = "127.0.0.1:"
+	IPFSDefaultPort = "5001"
 )

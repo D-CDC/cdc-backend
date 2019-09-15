@@ -1,8 +1,8 @@
 package main
 
 import (
-	"car-ipfs/common"
 	"fmt"
+	"github.com/D-CDC/cdc-backend/common"
 	"github.com/D-CDC/cdc-backend/rpc"
 	"os"
 )
@@ -13,13 +13,18 @@ func main() {
 		return
 	}
 
-	ip := "127.0.0.1:"
-	if len(os.Args) == 4 {
-		ip = ip + os.Args[6]
-	} else {
-		ip = ip + "5001"
-	}
-	common.DefaultSocketConfig.RpcAddress = ip
+	checkIP(os.Args)
 
 	rpc.StartRpcServer(os.Args[1], os.Args[2])
+}
+
+func checkIP(params []string) error {
+	ip := common.IPFSDialAddress
+	if len(params) == 4 {
+		ip = ip + os.Args[6]
+	} else {
+		ip = ip + common.IPFSDefaultPort
+	}
+	common.DefaultSocketConfig.RpcAddress = ip
+	return nil
 }
