@@ -7,7 +7,7 @@ const (
 	ApiIPFSAdd      = "http://localhost:5001/api/v0/add"
 	ApiIPFSCAT      = "http://localhost:5001/api/v0/cat?arg="
 
-	ADDCar    = "car"
+	ADDCar    = "carinfo"
 	ADDDrive  = "drive"
 	SuffixTxt = ".txt"
 	SuffixJpg = ".jpg"
